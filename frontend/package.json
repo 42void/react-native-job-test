@@ -1,0 +1,13 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "dependencies": {
+    "expo": "^32.0.1",
+    "react": "16.5.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-modal-selector": "0.0.27"
+  },
+  "devDependencies": {
+    "schedule": "^0.4.0"
+  }
+}
