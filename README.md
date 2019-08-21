@@ -5,7 +5,7 @@ Edit .env.sample to .env with accurate parameters
 Term1
 ```
 cd <path_to_project>/backend/
-node index.js
+npm start
 ```
 # Launch Frontend with Expo
 Change variable corresponding to API with device's IP address + backend's PORT env variable.
