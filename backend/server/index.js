@@ -1,9 +1,7 @@
 import express from 'express';
-import middlewaresConfig from './config/middleware';
 require('dotenv').config()
 var path = require('path');
 const app = express();
-middlewaresConfig(app);
 const sqlite3 = require('sqlite3').verbose();
 const DB_FILE = process.env.DB_FILE
 const DB_TABLE = process.env.DB_TABLE
@@ -104,9 +102,6 @@ app.get(`/getValues`, function(req, res) {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, err => {
-    if(err){
-        console.error(err);
-    }else{
-        console.log(`Listening to port: ${PORT}`);
-    }
+    if(err) console.error(err);
+    else console.log(`Listening to port: ${PORT}`);
 })
