@@ -8,23 +8,18 @@ const DB_TABLE = process.env.DB_TABLE
 
 app.get('/columns', function(req, res) {
     let db = new sqlite3.Database(path.resolve(__dirname, `./db/${DB_FILE}`), sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-        console.log(err.message);
-    }else{
-        console.log('Connected to the us-census database to retrieve columns names');
-    }
+    if (err) console.log(err.message);
+    else console.log('Connected to the us-census database to retrieve columns names');
 });
     var data = [];
     db.serialize(() => {
         db.each(`PRAGMA table_info(${DB_TABLE});`, (err, row) => {
-        if (err) {
-            console.error(err.message);
-        }
-        data.push(row.name);
+            if (err) console.error(err.message);
+            data.push(row.name);
         },  function(){
-                res.send(data); 
-                db.close(); 
-                console.log('Close the database connection (columns names)');
+            res.send(data); 
+            db.close(); 
+            console.log('Close the database connection (columns names)');
         }
         );
     });
@@ -32,11 +27,8 @@ app.get('/columns', function(req, res) {
 
 app.get(`/getValuesNumber`, function(req, res) {
     let db = new sqlite3.Database(path.resolve(__dirname, `./db/${DB_FILE}`), sqlite3.OPEN_READWRITE, (err) => {
-        if (err) {
-            console.log(err.message);
-        }else{
-            console.log('Connected to the us-census database to retrieve correspondant values.');
-        }
+        if (err) console.log(err.message);
+        else console.log('Connected to the us-census database to retrieve correspondant values.');
     });
     const columnName = req.query.columnName;
     var data = [];
@@ -50,12 +42,9 @@ app.get(`/getValuesNumber`, function(req, res) {
                 WHERE "${columnName}" NOT NULL
                 GROUP BY "${columnName}" 
                 ORDER BY "${columnName}" DESC
-            )
-        `, (err, row) => {
-            if (err) {
-                console.error(err.message);
-            }
-            data.push(row);
+        )`, (err, row) => {
+                if (err) console.error(err.message);
+                data.push(row);
         },  function(){
                 res.send(data); 
                 db.close(); 
@@ -67,11 +56,8 @@ app.get(`/getValuesNumber`, function(req, res) {
 
 app.get(`/getValues`, function(req, res) {
     let db = new sqlite3.Database(path.resolve(__dirname, `./db/${DB_FILE}`), sqlite3.OPEN_READWRITE, (err) => {
-        if (err) {
-            console.log(err.message);
-        }else{
-            console.log('Connected to the us-census database to retrieve correspondant values.');
-        }
+        if (err) console.log(err.message) 
+        else console.log('Connected to the us-census database to retrieve correspondant values.');
     });
     const columnName = req.query.columnName
     const offset = req.query.offset;
@@ -87,9 +73,7 @@ app.get(`/getValues`, function(req, res) {
             ORDER BY "${columnName}" DESC
             LIMIT 100 OFFSET ${offset}
         `, (err, row) => {
-            if (err) {
-                console.error(err.message);
-            }
+            if (err) console.error(err.message)
             data.push(row);
         },  function(){
                 res.send(data); 
