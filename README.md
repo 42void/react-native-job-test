@@ -5,6 +5,7 @@ Edit .env.sample to .env with accurate parameters
 Term1
 ```
 cd <path_to_project>/backend/
+npm i
 npm start
 ```
 # Launch Frontend with Expo
@@ -14,6 +15,7 @@ Test on same network
 Term2
 ```
 cd <path_to_project>/frontend/
+npm i
 exp start
 ```
 
