@@ -6,7 +6,7 @@ const sqlite3 = require('sqlite3').verbose();
 const DB_FILE = process.env.DB_FILE
 const DB_TABLE = process.env.DB_TABLE
 
-app.get('/columns', function (_, res) {
+app.get('/columns', function(req, res) {
     let db = new sqlite3.Database(path.resolve(__dirname, `./db/${DB_FILE}`), (err) => {
         if (err) console.log(err.message);
         else console.log('Connected to the us-census database to retrieve columns names');
@@ -15,14 +15,14 @@ app.get('/columns', function (_, res) {
     db.each(`PRAGMA table_info(${DB_TABLE});`, (err, row) => {
         if (err) console.error(err.message);
         data.push(row.name);
-    }, function () {
+    }, function(){
         res.send(data);
         db.close();
         console.log('Close the database connection (columns names)');
     });
 });
 
-app.get(`/getValuesNumber`, function (req, res) {
+app.get(`/getValuesNumber`, function(req, res) {
     let db = new sqlite3.Database(path.resolve(__dirname, `./db/${DB_FILE}`), (err) => {
         if (err) console.log(err.message);
         else console.log('Connected to the us-census database to get number of lines.');
@@ -41,7 +41,7 @@ app.get(`/getValuesNumber`, function (req, res) {
     )`, (err, row) => {
             if (err) console.error(err.message);
             data.push(row);
-        }, function () {
+        }, function(){
             res.send(data);
             db.close();
             console.log('Close the database connection (values)');
@@ -49,7 +49,7 @@ app.get(`/getValuesNumber`, function (req, res) {
     );
 });
 
-app.get(`/getValues`, function (req, res) {
+app.get(`/getValues`, function(req, res) {
     let db = new sqlite3.Database(path.resolve(__dirname, `./db/${DB_FILE}`), (err) => {
         if (err) console.log(err.message)
         else console.log('Connected to the us-census database to retrieve correspondant values.');
@@ -69,7 +69,7 @@ app.get(`/getValues`, function (req, res) {
     `, (err, row) => {
             if (err) console.error(err.message)
             data.push(row);
-        }, function () {
+        }, function(){
             res.send(data);
             db.close();
             console.log('Close the database connection (values)');
@@ -79,6 +79,6 @@ app.get(`/getValues`, function (req, res) {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, err => {
-    if (err) console.error(err);
+    if(err) console.error(err);
     else console.log(`Listening to port: ${PORT}`);
 })
