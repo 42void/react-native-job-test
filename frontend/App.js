@@ -1,10 +1,9 @@
 import React from 'react';
 import { Text, View, ActivityIndicator, ScrollView, Dimensions, Button } from 'react-native';
 import ModalSelector from 'react-native-modal-selector'
-
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
-const API = "http://localhost:3000"
+const HOST = "http://localhost:3000"
 
 export default class App extends React.Component {
 
@@ -16,8 +15,8 @@ export default class App extends React.Component {
         loading : false,
         columns : [],
         result:[],
-        subCategorie:'',
-        numberInstances:0,
+        columnName:'',
+        totalNumOfLines:0,
         numberLinesNotDisplayed:0,
         buttonDisable:false
     }
@@ -25,7 +24,7 @@ export default class App extends React.Component {
 
   componentDidMount(){
     this.setState({ loading:true })
-    fetch(`${API}/columns`)
+    fetch(`${HOST}/columns`)
       .then(res => res.json())
       .then(data => {
         delete data[data.indexOf('age')]
@@ -36,28 +35,28 @@ export default class App extends React.Component {
   async getColumnValues(columnName){
       this.setState({ loading:true })
 
-      // fetch(`${API}/getValuesNumber?columnName=${columnName}`)
+      // fetch(`${HOST}/getValuesNumber?columnName=${columnName}`)
       // .then(res => res.json())
       // .then(data => {
-      //   let objectSize =  data[0].values_number
-      //   this.setState({numberInstances:objectSize, numberLinesNotDisplayed:objectSize-100})
+      //   let totalNumOfLines =  data[0].values_number
+      //   this.setState({totalNumOfLines, numberLinesNotDisplayed:totalNumOfLines-100})
 
       // })
 
-      // fetch(`${API}/getValues?columnName=${columnName}&offset=${0}`)
+      // fetch(`${HOST}/getValues?columnName=${columnName}&offset=${0}`)
       // .then(res => res.json())
       // .then(data => {
-      //     this.setState({loading:false, result: data, subCategorie:columnName})
+      //     this.setState({loading:false, result: data, columnName})
       // })
 
-      const response1 = await fetch(`${API}/getValuesNumber?columnName=${columnName}`);
-      const dataCount = await response1.json();
-      let objectSize =  dataCount[0].values_number
-      this.setState({numberInstances:objectSize, numberLinesNotDisplayed:objectSize-100})
+      const res = await fetch(`${HOST}/getValuesNumber?columnName=${columnName}`);
+      const jsonBodyObj = await res.json();
+      let totalNumOfLines =  jsonBodyObj[0].values_number
 
-      const response2 = await fetch(`${API}/getValues?columnName=${columnName}&offset=${0}`);
-      const dataSet = await response2.json();
-      this.setState({loading:false, result: dataSet, subCategorie:columnName})
+      const res2 = await fetch(`${HOST}/getValues?columnName=${columnName}&offset=${0}`);
+      const jsonBodyObjs = await res2.json();
+      
+      this.setState({loading:false, totalNumOfLines, numberLinesNotDisplayed:totalNumOfLines-100, result: jsonBodyObjs, columnName})
   }
 
   capitalizeFirstLetter(string) {
@@ -67,19 +66,18 @@ export default class App extends React.Component {
   async handlePress(){
     this.setState({buttonDisable:true})
     let offset = this.state.result.length;
-    let columnName = this.state.subCategorie;
-    const res = await fetch(`${API}/getValues?columnName=${columnName}&offset=${offset}`);
+    let columnName = this.state.columnName;
+    const res = await fetch(`${HOST}/getValues?columnName=${columnName}&offset=${offset}`);
     const dataSet = await res.json();
     const oldResult = this.state.result
-    const newNumberLinesNotDisplayed = this.state.numberInstances - offset - 100
-    this.setState({result:[...oldResult, ...dataSet], numberLinesNotDisplayed : newNumberLinesNotDisplayed < 0 ? 0 : newNumberLinesNotDisplayed });
-    this.setState({buttonDisable:false})
+    const newNumberLinesNotDisplayed = this.state.totalNumOfLines - offset - 100
+    this.setState({result:[...oldResult, ...dataSet], numberLinesNotDisplayed : newNumberLinesNotDisplayed < 0 ? 0 : newNumberLinesNotDisplayed, buttonDisable:false });
   }
 
   render() { 
     let index = 0;
     const cat = []
-    this.state.columns.map((column, i) => {cat.push({key:index++, label: this.capitalizeFirstLetter(column)})})
+    this.state.columns.map(column => cat.push({key:index++, label: this.capitalizeFirstLetter(column)}))
 
     return (
       <View style={{flex:1,  paddingTop:70, marginBottom:50}}>
@@ -101,7 +99,7 @@ export default class App extends React.Component {
           </View>
           
           <View style={{height:35, paddingLeft:15, justifyContent:'center'}}>
-            {this.state.numberInstances>100 && !this.state.loading && <Text>Number of lines non-displayed: {this.state.numberLinesNotDisplayed}</Text>}
+            {this.state.totalNumOfLines>100 && !this.state.loading && <Text>Number of lines non-displayed: {this.state.numberLinesNotDisplayed}</Text>}
           </View>
   
           <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
@@ -115,7 +113,7 @@ export default class App extends React.Component {
                   return(
                       <View key={i} style={{borderBottomColor:'#1E90FF', paddingVertical:15, borderBottomWidth:2 , width: SCREEN_WIDTH*0.9}}>
                         <View style={{flexDirection:'row'}}>
-                          <Text>Categorie: </Text><Text style={{fontWeight:'bold'}}>{result[this.state.subCategorie]}</Text>
+                          <Text>Categorie: </Text><Text style={{fontWeight:'bold'}}>{result[this.state.columnName]}</Text>
                         </View>
                         <View style={{flexDirection:'row'}}>
                           <Text>Count: </Text><Text style={{fontWeight:'bold'}}>{result.count}</Text>
@@ -127,7 +125,7 @@ export default class App extends React.Component {
                   )
                 })
               }
-              {!this.state.loading && this.state.numberInstances>100 && this.state.numberLinesNotDisplayed &&
+              {!this.state.loading && this.state.totalNumOfLines>100 && this.state.numberLinesNotDisplayed &&
                 <View style={{paddingTop:10}}>
                   <Button
                     onPress={() => this.handlePress()}

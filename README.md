@@ -9,7 +9,7 @@ npm i
 npm start
 ```
 # Launch Frontend with Expo
-Change variable corresponding to API with device's IP address + backend's PORT env variable.
+Change variable corresponding to HOST with device's IP address + backend's PORT env variable.
 Test on same network
 
 Term2
