@@ -99,7 +99,11 @@ export default class App extends React.Component {
           </View>
           
           <View style={{height:35, paddingLeft:15, justifyContent:'center'}}>
-            {this.state.totalNumOfLines>100 && !this.state.loading && <Text>Number of lines non-displayed: {this.state.numberLinesNotDisplayed}</Text>}
+            {
+              this.state.numberLinesNotDisplayed > 0 && 
+              this.state.totalNumOfLines > 100 && 
+              !this.state.loading && <Text>Number of lines non-displayed: {this.state.numberLinesNotDisplayed}</Text>
+            }
           </View>
   
           <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
