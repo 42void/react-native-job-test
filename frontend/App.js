@@ -125,7 +125,7 @@ export default class App extends React.Component {
                   )
                 })
               }
-              {!this.state.loading && this.state.totalNumOfLines>100 && this.state.numberLinesNotDisplayed &&
+              {!this.state.loading && this.state.totalNumOfLines>100 && this.state.numberLinesNotDisplayed !== 0 &&
                 <View style={{paddingTop:10}}>
                   <Button
                     onPress={() => this.handlePress()}
